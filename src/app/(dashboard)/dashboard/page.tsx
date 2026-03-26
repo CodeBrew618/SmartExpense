@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react'
 import { format, startOfMonth, endOfMonth, subMonths, parseISO } from 'date-fns'
+import { DollarSign, TrendingUp, TrendingDown, Receipt, Tag } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { useUser, useProfile } from '@/hooks/useProfile'
 import { useExpenses } from '@/hooks/useExpenses'
@@ -9,7 +10,7 @@ import { useCategories } from '@/hooks/useCategories'
 import { formatCurrency } from '@/lib/utils'
 import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart'
 import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart'
-import { SpendingTrendLine } from '@/components/charts/SpendingTrendLine'
+import { RecentTransactions } from '@/components/dashboard/RecentTransactions'
 
 export default function DashboardPage() {
   const { user } = useUser()
@@ -62,8 +63,10 @@ export default function DashboardPage() {
 
     return {
       thisMonthTotal,
+      lastMonthTotal,
       percentChange,
       topCategory,
+      topCategoryAmount,
       expenseCount: thisMonthExpenses.length,
     }
   }, [expenses, categories])
@@ -73,52 +76,101 @@ export default function DashboardPage() {
       <div className="space-y-6">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-[88px] animate-pulse rounded-xl bg-gray-100" />
+            <div key={i} className="h-[100px] animate-pulse rounded-xl bg-gray-100" />
           ))}
         </div>
         <div className="grid gap-6 lg:grid-cols-2">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="h-[300px] animate-pulse rounded-xl bg-gray-100" />
           ))}
         </div>
+        <div className="h-[300px] animate-pulse rounded-xl bg-gray-100" />
       </div>
     )
   }
 
+  const currency = profile?.currency ?? 'USD'
+  const isUp = (stats?.percentChange ?? 0) > 0
+
   return (
     <div className="space-y-6">
-      {/* Summary cards */}
+      {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Total this month */}
         <Card>
-          <p className="text-xs font-medium text-gray-500">Total this month</p>
-          <p className="mt-1 text-2xl font-semibold tracking-tight text-gray-900">
-            {formatCurrency(stats?.thisMonthTotal ?? 0)}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-light">
+              <DollarSign className="h-3.5 w-3.5 text-accent-dark" />
+            </div>
+            <p className="text-xs font-medium text-gray-500">Total this month</p>
+          </div>
+          <p className="text-2xl font-semibold tracking-tight text-gray-900">
+            {formatCurrency(stats?.thisMonthTotal ?? 0, currency)}
+          </p>
+          <p className="mt-1 text-xs text-gray-400">{format(new Date(), 'MMMM yyyy')}</p>
+        </Card>
+
+        {/* vs last month */}
+        <Card>
+          <div className="flex items-center gap-2 mb-3">
+            <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${
+              stats?.percentChange == null
+                ? 'bg-gray-100'
+                : isUp ? 'bg-red-50' : 'bg-emerald-50'
+            }`}>
+              {isUp
+                ? <TrendingUp className="h-3.5 w-3.5 text-red-500" />
+                : <TrendingDown className="h-3.5 w-3.5 text-emerald-500" />
+              }
+            </div>
+            <p className="text-xs font-medium text-gray-500">vs last month</p>
+          </div>
+          <p className={`text-2xl font-semibold tracking-tight ${
+            stats?.percentChange == null
+              ? 'text-gray-900'
+              : isUp ? 'text-red-500' : 'text-emerald-500'
+          }`}>
+            {stats?.percentChange != null
+              ? `${isUp ? '+' : ''}${stats.percentChange.toFixed(1)}%`
+              : '—'}
+          </p>
+          <p className="mt-1 text-xs text-gray-400">
+            vs {format(subMonths(new Date(), 1), 'MMMM')}
           </p>
         </Card>
+
+        {/* Top category */}
         <Card>
-          <p className="text-xs font-medium text-gray-500">vs. last month</p>
-          <p className="mt-1 text-2xl font-semibold tracking-tight text-gray-900">
-            {stats?.percentChange !== null && stats?.percentChange !== undefined ? (
-              <span className={stats.percentChange > 0 ? 'text-red-500' : 'text-emerald-500'}>
-                {stats.percentChange > 0 ? '+' : ''}
-                {stats.percentChange.toFixed(1)}%
-              </span>
-            ) : (
-              '—'
-            )}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-light">
+              <Tag className="h-3.5 w-3.5 text-accent-dark" />
+            </div>
+            <p className="text-xs font-medium text-gray-500">Top category</p>
+          </div>
+          <p className="text-2xl font-semibold tracking-tight text-gray-900">
+            {stats?.topCategory
+              ? `${stats.topCategory.icon} ${stats.topCategory.name}`
+              : '—'}
+          </p>
+          <p className="mt-1 text-xs text-gray-400">
+            {stats?.topCategory
+              ? `${formatCurrency(stats.topCategoryAmount, currency)} this month`
+              : 'No data yet'}
           </p>
         </Card>
+
+        {/* Expense count */}
         <Card>
-          <p className="text-xs font-medium text-gray-500">Top category</p>
-          <p className="mt-1 text-2xl font-semibold tracking-tight text-gray-900">
-            {stats?.topCategory ? `${stats.topCategory.icon} ${stats.topCategory.name}` : '—'}
-          </p>
-        </Card>
-        <Card>
-          <p className="text-xs font-medium text-gray-500">Expenses</p>
-          <p className="mt-1 text-2xl font-semibold tracking-tight text-gray-900">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-accent-light">
+              <Receipt className="h-3.5 w-3.5 text-accent-dark" />
+            </div>
+            <p className="text-xs font-medium text-gray-500">Expenses</p>
+          </div>
+          <p className="text-2xl font-semibold tracking-tight text-gray-900">
             {stats?.expenseCount ?? 0}
           </p>
+          <p className="mt-1 text-xs text-gray-400">transactions</p>
         </Card>
       </div>
 
@@ -129,16 +181,16 @@ export default function DashboardPage() {
             <div>
               <p className="text-xs font-medium text-gray-500">Monthly budget</p>
               <p className="mt-0.5 text-sm font-semibold text-gray-900">
-                {formatCurrency(stats.thisMonthTotal, profile.currency)} of{' '}
-                {formatCurrency(profile.monthly_budget, profile.currency)}
+                {formatCurrency(stats.thisMonthTotal, currency)} of{' '}
+                {formatCurrency(profile.monthly_budget, currency)}
               </p>
             </div>
             <p className={`text-sm font-semibold ${
               stats.thisMonthTotal > profile.monthly_budget ? 'text-red-500' : 'text-gray-500'
             }`}>
               {stats.thisMonthTotal > profile.monthly_budget
-                ? `Over by ${formatCurrency(stats.thisMonthTotal - profile.monthly_budget, profile.currency)}`
-                : `${formatCurrency(profile.monthly_budget - stats.thisMonthTotal, profile.currency)} left`}
+                ? `Over by ${formatCurrency(stats.thisMonthTotal - profile.monthly_budget, currency)}`
+                : `${formatCurrency(profile.monthly_budget - stats.thisMonthTotal, currency)} left`}
             </p>
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
@@ -157,14 +209,14 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      {/* Charts */}
+      {/* Recent transactions + category breakdown */}
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <div className="mb-4">
-            <h2 className="text-sm font-semibold text-gray-900">Monthly Spending</h2>
-            <p className="mt-0.5 text-xs text-gray-500">Last 6 months</p>
+            <h2 className="text-sm font-semibold text-gray-900">Recent Transactions</h2>
+            <p className="mt-0.5 text-xs text-gray-500">Your latest activity</p>
           </div>
-          <MonthlyBarChart expenses={expenses ?? []} />
+          <RecentTransactions expenses={expenses ?? []} currency={currency} />
         </Card>
 
         <Card>
@@ -174,15 +226,16 @@ export default function DashboardPage() {
           </div>
           <CategoryDonutChart expenses={expenses ?? []} />
         </Card>
-
-        <Card className="lg:col-span-2">
-          <div className="mb-4">
-            <h2 className="text-sm font-semibold text-gray-900">Daily Spending Trend</h2>
-            <p className="mt-0.5 text-xs text-gray-500">Last 30 days</p>
-          </div>
-          <SpendingTrendLine expenses={expenses ?? []} />
-        </Card>
       </div>
+
+      {/* Monthly trend */}
+      <Card>
+        <div className="mb-4">
+          <h2 className="text-sm font-semibold text-gray-900">Monthly Spending</h2>
+          <p className="mt-0.5 text-xs text-gray-500">Last 6 months</p>
+        </div>
+        <MonthlyBarChart expenses={expenses ?? []} />
+      </Card>
     </div>
   )
 }

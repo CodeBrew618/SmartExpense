@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { DEFAULT_CATEGORIES } from '@/hooks/useCategories'
+import { GoogleIcon } from '@/components/icons/GoogleIcon'
 
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters'),
@@ -22,6 +23,14 @@ type SignupFormData = z.infer<typeof signupSchema>
 export function SignupForm() {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
+
+  const handleGoogleOAuth = async () => {
+    const supabase = createClient()
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    })
+  }
   const {
     register,
     handleSubmit,
@@ -109,7 +118,25 @@ export function SignupForm() {
         Create account
       </Button>
 
-      <p className="text-center text-sm text-gray-500">
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="bg-white px-2 text-gray-400">or</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleGoogleOAuth}
+        className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+      >
+        <GoogleIcon className="h-4 w-4" />
+        Continue with Google
+      </button>
+
+      <p className="mt-6 text-center text-sm text-gray-500">
         Already have an account?{' '}
         <Link href="/login" className="font-medium text-indigo-500 hover:text-indigo-600">
           Sign in

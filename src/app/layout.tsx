@@ -17,10 +17,12 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "SmartXpense — Finance Tracker",
   description: "Know where every dollar goes",
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     title: "SmartXpense — Finance Tracker",
     description: "Know where every dollar goes",
-    url: "https://smartxpense.codebrewstudio.com",
     siteName: "SmartXpense",
     type: "website",
   },
@@ -38,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.className} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <QueryProvider>
           <ToastProvider>{children}</ToastProvider>
         </QueryProvider>

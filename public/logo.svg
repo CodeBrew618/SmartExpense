@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32" width="160" height="32">
+  <!-- Claw mark (32×32 design fitted in left 32px) -->
+  <path fill="#4F46E5"
+    d="M2,24 C1,18 4,10 10,7 C15,4 21,5 23,9 C24,11 24,13 23,14 C20,13 15,13 11,17 C7,21 6,24 6,27 C4,28 2,26 2,24Z"/>
+  <path fill="#4F46E5"
+    d="M5,28 C4,25 7,22 11,20 C15,18 21,17 23,20 C24,21 24,23 23,23 C20,23 16,23 13,25 C10,27 7,28 5,28Z"/>
+  <circle cx="26" cy="17" r="4.5" fill="#F59E0B"/>
+  <circle cx="26" cy="17" r="2.8" fill="none" stroke="#D97706" stroke-width="1.2"/>
+  <!-- Wordmark -->
+  <text x="36" y="21" font-family="'Inter', system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" letter-spacing="-0.3" fill="#111827">SmartXpense</text>
+</svg>

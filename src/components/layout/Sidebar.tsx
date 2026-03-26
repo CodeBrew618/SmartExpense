@@ -6,6 +6,7 @@ import { LayoutDashboard, Receipt, Settings, LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useUser, useProfile } from '@/hooks/useProfile'
 import { cn } from '@/lib/utils'
+import { WordmarkLogo } from '@/components/ui/WordmarkLogo'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,10 +29,8 @@ export function Sidebar() {
 
   return (
     <aside className="hidden md:flex md:w-60 md:flex-col md:border-r md:border-gray-100 md:bg-white">
-      <div className="flex h-14 items-center gap-2.5 border-b border-gray-100 px-5">
-        <span className="text-lg font-semibold tracking-tight text-gray-900">
-          SmartXpense
-        </span>
+      <div className="flex h-14 items-center border-b border-gray-100 px-5">
+        <WordmarkLogo size="md" />
       </div>
 
       {/* User identity */}
