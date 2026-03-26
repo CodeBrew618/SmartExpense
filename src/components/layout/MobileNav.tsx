@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Receipt } from 'lucide-react'
+import { LayoutDashboard, Receipt, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/expenses', label: 'Expenses', icon: Receipt },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
 export function MobileNav() {
@@ -24,7 +25,7 @@ export function MobileNav() {
               href={item.href}
               className={cn(
                 'flex flex-col items-center gap-1 px-3 py-1 text-xs font-medium transition-colors',
-                isActive ? 'text-indigo-600' : 'text-gray-400'
+                isActive ? 'text-accent-dark' : 'text-gray-400'
               )}
             >
               <item.icon className="h-5 w-5" />

@@ -1,8 +1,13 @@
+export type ThemeColor = 'indigo' | 'violet' | 'rose' | 'amber' | 'emerald'
+
 export interface Profile {
   id: string
   full_name: string | null
+  username: string | null
   avatar_url: string | null
   currency: string
+  theme_color: ThemeColor
+  monthly_budget: number | null
   created_at: string
 }
 

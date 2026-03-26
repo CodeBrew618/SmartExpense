@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 import { format, startOfMonth, endOfMonth, subMonths, parseISO } from 'date-fns'
 import { Card } from '@/components/ui/Card'
-import { useUser } from '@/hooks/useProfile'
+import { useUser, useProfile } from '@/hooks/useProfile'
 import { useExpenses } from '@/hooks/useExpenses'
 import { useCategories } from '@/hooks/useCategories'
 import { formatCurrency } from '@/lib/utils'
@@ -15,6 +15,7 @@ export default function DashboardPage() {
   const { user } = useUser()
   const { data: expenses, isLoading } = useExpenses(user?.id)
   const { data: categories } = useCategories(user?.id)
+  const { data: profile } = useProfile(user?.id)
 
   const stats = useMemo(() => {
     if (!expenses) return null
@@ -120,6 +121,41 @@ export default function DashboardPage() {
           </p>
         </Card>
       </div>
+
+      {/* Budget progress */}
+      {profile?.monthly_budget != null && stats && (
+        <Card>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-xs font-medium text-gray-500">Monthly budget</p>
+              <p className="mt-0.5 text-sm font-semibold text-gray-900">
+                {formatCurrency(stats.thisMonthTotal, profile.currency)} of{' '}
+                {formatCurrency(profile.monthly_budget, profile.currency)}
+              </p>
+            </div>
+            <p className={`text-sm font-semibold ${
+              stats.thisMonthTotal > profile.monthly_budget ? 'text-red-500' : 'text-gray-500'
+            }`}>
+              {stats.thisMonthTotal > profile.monthly_budget
+                ? `Over by ${formatCurrency(stats.thisMonthTotal - profile.monthly_budget, profile.currency)}`
+                : `${formatCurrency(profile.monthly_budget - stats.thisMonthTotal, profile.currency)} left`}
+            </p>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+            <div
+              className={`h-full rounded-full transition-all ${
+                stats.thisMonthTotal > profile.monthly_budget ? 'bg-red-500' : 'bg-accent'
+              }`}
+              style={{
+                width: `${Math.min((stats.thisMonthTotal / profile.monthly_budget) * 100, 100)}%`,
+              }}
+            />
+          </div>
+          <p className="mt-1.5 text-xs text-gray-400">
+            {Math.min(Math.round((stats.thisMonthTotal / profile.monthly_budget) * 100), 100)}% used this month
+          </p>
+        </Card>
+      )}
 
       {/* Charts */}
       <div className="grid gap-6 lg:grid-cols-2">
