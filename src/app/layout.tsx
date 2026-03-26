@@ -15,7 +15,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ClawXpense — Finance Tracker",
+  title: "SmartXpense — Finance Tracker",
   description: "Track your expenses and understand your spending",
 };
 
