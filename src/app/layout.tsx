@@ -17,6 +17,18 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "SmartXpense — Finance Tracker",
   description: "Know where every dollar goes",
+  openGraph: {
+    title: "SmartXpense — Finance Tracker",
+    description: "Know where every dollar goes",
+    url: "https://smartxpense.codebrewstudio.com",
+    siteName: "SmartXpense",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "SmartXpense — Finance Tracker",
+    description: "Know where every dollar goes",
+  },
 };
 
 export default function RootLayout({
