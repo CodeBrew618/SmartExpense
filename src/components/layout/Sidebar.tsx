@@ -2,14 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Receipt, BarChart3, LogOut } from 'lucide-react'
+import { LayoutDashboard, Receipt, LogOut } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/expenses', label: 'Expenses', icon: Receipt },
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
 ]
 
 export function Sidebar() {

@@ -2,13 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Receipt, BarChart3 } from 'lucide-react'
+import { LayoutDashboard, Receipt } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/expenses', label: 'Expenses', icon: Receipt },
-  { href: '/analytics', label: 'Analytics', icon: BarChart3 },
 ]
 
 export function MobileNav() {
