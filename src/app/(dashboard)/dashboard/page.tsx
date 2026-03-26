@@ -1,12 +1,15 @@
 'use client'
 
 import { useMemo } from 'react'
+import { format, startOfMonth, endOfMonth, subMonths, parseISO } from 'date-fns'
 import { Card } from '@/components/ui/Card'
 import { useUser } from '@/hooks/useProfile'
 import { useExpenses } from '@/hooks/useExpenses'
 import { useCategories } from '@/hooks/useCategories'
 import { formatCurrency } from '@/lib/utils'
-import { startOfMonth, endOfMonth, subMonths, parseISO } from 'date-fns'
+import { MonthlyBarChart } from '@/components/charts/MonthlyBarChart'
+import { CategoryDonutChart } from '@/components/charts/CategoryDonutChart'
+import { SpendingTrendLine } from '@/components/charts/SpendingTrendLine'
 
 export default function DashboardPage() {
   const { user } = useUser()
@@ -40,7 +43,6 @@ export default function DashboardPage() {
         ? ((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100
         : null
 
-    // Top category this month
     const categoryTotals = new Map<string, number>()
     for (const e of thisMonthExpenses) {
       if (e.category_id) {
@@ -67,16 +69,24 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-[88px] animate-pulse rounded-xl bg-gray-100" />
-        ))}
+      <div className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-[88px] animate-pulse rounded-xl bg-gray-100" />
+          ))}
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-[300px] animate-pulse rounded-xl bg-gray-100" />
+          ))}
+        </div>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
+      {/* Summary cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <p className="text-xs font-medium text-gray-500">Total this month</p>
@@ -108,6 +118,33 @@ export default function DashboardPage() {
           <p className="mt-1 text-2xl font-semibold tracking-tight text-gray-900">
             {stats?.expenseCount ?? 0}
           </p>
+        </Card>
+      </div>
+
+      {/* Charts */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <div className="mb-4">
+            <h2 className="text-sm font-semibold text-gray-900">Monthly Spending</h2>
+            <p className="mt-0.5 text-xs text-gray-500">Last 6 months</p>
+          </div>
+          <MonthlyBarChart expenses={expenses ?? []} />
+        </Card>
+
+        <Card>
+          <div className="mb-4">
+            <h2 className="text-sm font-semibold text-gray-900">Spending by Category</h2>
+            <p className="mt-0.5 text-xs text-gray-500">{format(new Date(), 'MMMM yyyy')}</p>
+          </div>
+          <CategoryDonutChart expenses={expenses ?? []} />
+        </Card>
+
+        <Card className="lg:col-span-2">
+          <div className="mb-4">
+            <h2 className="text-sm font-semibold text-gray-900">Daily Spending Trend</h2>
+            <p className="mt-0.5 text-xs text-gray-500">Last 30 days</p>
+          </div>
+          <SpendingTrendLine expenses={expenses ?? []} />
         </Card>
       </div>
     </div>
