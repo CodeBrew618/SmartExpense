@@ -3,6 +3,7 @@
 import { Modal } from '@/components/ui/Modal'
 import { Button } from '@/components/ui/Button'
 import { useDeleteExpense } from '@/hooks/useExpenses'
+import { useToast } from '@/components/providers/ToastProvider'
 import { formatCurrency } from '@/lib/utils'
 import type { Expense } from '@/types'
 
@@ -15,11 +16,17 @@ interface DeleteConfirmProps {
 
 export function DeleteConfirm({ open, onClose, expense, userId }: DeleteConfirmProps) {
   const deleteExpense = useDeleteExpense()
+  const { toast } = useToast()
 
   const handleDelete = async () => {
     if (!expense) return
-    await deleteExpense.mutateAsync({ id: expense.id, userId })
-    onClose()
+    try {
+      await deleteExpense.mutateAsync({ id: expense.id, userId })
+      toast('Expense deleted')
+      onClose()
+    } catch {
+      toast('Failed to delete expense. Please try again.', 'error')
+    }
   }
 
   if (!expense) return null

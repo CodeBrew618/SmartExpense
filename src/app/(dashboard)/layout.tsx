@@ -1,6 +1,11 @@
+import type { Metadata } from 'next'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { TopBar } from '@/components/layout/TopBar'
 import { MobileNav } from '@/components/layout/MobileNav'
+
+export const metadata: Metadata = {
+  title: 'ClawXpense — Finance Tracker',
+}
 
 export default function DashboardLayout({
   children,

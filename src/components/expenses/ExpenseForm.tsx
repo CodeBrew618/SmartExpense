@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Select } from '@/components/ui/Select'
 import { useAddExpense, useUpdateExpense } from '@/hooks/useExpenses'
+import { useToast } from '@/components/providers/ToastProvider'
 import type { Category, Expense } from '@/types'
 import { format } from 'date-fns'
 
@@ -32,6 +33,7 @@ export function ExpenseForm({ open, onClose, userId, categories, expense }: Expe
   const isEditing = !!expense
   const addExpense = useAddExpense()
   const updateExpense = useUpdateExpense()
+  const { toast } = useToast()
 
   const {
     register,
@@ -56,13 +58,19 @@ export function ExpenseForm({ open, onClose, userId, categories, expense }: Expe
   })
 
   const onSubmit = async (data: FormValues) => {
-    if (isEditing && expense) {
-      await updateExpense.mutateAsync({ id: expense.id, userId, data })
-    } else {
-      await addExpense.mutateAsync({ userId, data })
+    try {
+      if (isEditing && expense) {
+        await updateExpense.mutateAsync({ id: expense.id, userId, data })
+        toast('Expense updated')
+      } else {
+        await addExpense.mutateAsync({ userId, data })
+        toast('Expense added')
+      }
+      reset()
+      onClose()
+    } catch {
+      toast('Something went wrong. Please try again.', 'error')
     }
-    reset()
-    onClose()
   }
 
   const categoryOptions = categories.map((c) => ({
