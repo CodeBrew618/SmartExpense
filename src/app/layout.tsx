@@ -16,7 +16,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "SmartXpense — Finance Tracker",
-  description: "Track your expenses and understand your spending",
+  description: "Know where every dollar goes",
 };
 
 export default function RootLayout({
