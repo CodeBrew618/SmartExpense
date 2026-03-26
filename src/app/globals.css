@@ -1,6 +1,83 @@
 @import "tailwindcss";
 
+/* ─── Accent color themes ─────────────────────────────────────────────────── */
+/* RGB triplets (no commas) so we can compose with / opacity */
+:root,
+[data-theme='indigo'] {
+  --accent:       99 102 241;   /* indigo-500  */
+  --accent-dark:  79  70 229;   /* indigo-600  */
+  --accent-light: 238 242 255;  /* indigo-50   */
+}
+[data-theme='violet'] {
+  --accent:       139  92 246;  /* violet-500  */
+  --accent-dark:  124  58 237;  /* violet-600  */
+  --accent-light: 245 243 255;  /* violet-50   */
+}
+[data-theme='rose'] {
+  --accent:       244  63  94;  /* rose-500    */
+  --accent-dark:  225  29  72;  /* rose-600    */
+  --accent-light: 255 241 242;  /* rose-50     */
+}
+[data-theme='amber'] {
+  --accent:       245 158  11;  /* amber-500   */
+  --accent-dark:  217 119   6;  /* amber-600   */
+  --accent-light: 255 251 235;  /* amber-50    */
+}
+[data-theme='emerald'] {
+  --accent:        16 185 129;  /* emerald-500 */
+  --accent-dark:    5 150 105;  /* emerald-600 */
+  --accent-light:  236 253 245; /* emerald-50  */
+}
+
+/* ─── Accent utility classes (Tailwind v4 @utility) ──────────────────────── */
+@utility bg-accent {
+  background-color: rgb(var(--accent));
+}
+@utility bg-accent-dark {
+  background-color: rgb(var(--accent-dark));
+}
+@utility bg-accent-light {
+  background-color: rgb(var(--accent-light));
+}
+@utility text-accent {
+  color: rgb(var(--accent));
+}
+@utility text-accent-dark {
+  color: rgb(var(--accent-dark));
+}
+@utility border-accent {
+  border-color: rgb(var(--accent));
+}
+@utility ring-accent {
+  --tw-ring-color: rgb(var(--accent) / 0.2);
+}
+@utility ring-accent-full {
+  --tw-ring-color: rgb(var(--accent));
+}
+
+/* ─── Mobile viewport ─────────────────────────────────────────────────────── */
+html,
+body {
+  touch-action: pan-y;
+  overscroll-behavior: none;
+}
+
 body {
   background: #f9fafb;
   color: #111827;
+}
+
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+input,
+select,
+textarea {
+  font-size: max(16px, 1em);
 }
