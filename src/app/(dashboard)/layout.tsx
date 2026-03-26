@@ -5,7 +5,7 @@ import { MobileNav } from '@/components/layout/MobileNav'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 
 export const metadata: Metadata = {
-  title: 'ClawXpense — Finance Tracker',
+  title: 'SmartXpense — Finance Tracker',
 }
 
 export default function DashboardLayout({

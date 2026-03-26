@@ -30,7 +30,7 @@ export function Sidebar() {
     <aside className="hidden md:flex md:w-60 md:flex-col md:border-r md:border-gray-100 md:bg-white">
       <div className="flex h-14 items-center gap-2.5 border-b border-gray-100 px-5">
         <span className="text-lg font-semibold tracking-tight text-gray-900">
-          ClawXpense
+          SmartXpense
         </span>
       </div>
 
